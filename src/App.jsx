@@ -46,8 +46,15 @@ function Header({ onMaster, user }) {
     <button className="bag-trigger" aria-label="Vitriny" onClick={tapBag}><img src="/vitriny-icon-192.png" alt="" /></button>
     <Link to="/" className="brand">vitriny<span>.</span></Link>
     <nav className="desktop-nav"><Link to="/">Explorar</Link><Link to="/mapa">Mapa</Link><Link to="/favoritos">Favoritos</Link><Link to="/lojista">Sou lojista</Link></nav>
-    <Link className="login-link" to="/conta"><LogIn size={17}/> Entrar</Link>
-  </header>
+    {user ? (
+  <Link className="login-link" to="/lojista">
+<Store size={17}/> Minha conta
+  </Link>
+) : (
+  <Link className="login-link" to="/conta">
+  <LogIn size={17}/> Entrar</Link>
+ )} 
+</header>
 }
 function ProductCard({p, user, onFavorite, favorite=false}) {
   const [saved,setSaved] = useState(favorite)
@@ -267,5 +274,5 @@ export default function App(){
  const [user,setUser]=useState(null),[master,setMaster]=useState(false)
  useEffect(()=>{if(!supabase){setUser(null);return}let active=true;const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,session)=>{if(active)setUser(session?.user||null)});supabase.auth.getSession().then(({data,error})=>{if(active&&!error)setUser(data.session?.user||null)});return()=>{active=false;subscription.unsubscribe()}},[])
  async function logout(){await supabase?.auth.signOut();setUser(null)}
- return <><Header onMaster={()=>setMaster(true)}/><Routes><Route path="/" element={<Home user={user}/>}/><Route path="/conta" element={<Auth onUser={setUser}/>}/><Route path="/lojista" element={<Merchant user={user}/>}/><Route path="/mapa" element={<MapPage/>}/><Route path="/favoritos" element={<Favorites user={user}/>}/><Route path="/loja/:slug" element={<StoreDetail/>}/><Route path="*" element={<Navigate to="/" replace/>}/></Routes><footer className="footer"><div className="footer-brand">vitriny<span>.</span><p>Sua cidade inteira em uma vitrine.</p></div><div><strong>Explore</strong><Link to="/">Lojas e produtos</Link><Link to="/mapa">Mapa</Link><Link to="/favoritos">Favoritos</Link></div><div><strong>Para comerciantes</strong><Link to="/lojista">Área do lojista</Link><Link to="/conta">Criar conta</Link></div><div className="footer-bottom">© {new Date().getFullYear()} Vitriny. Feito para valorizar o comércio local. {user&&<button onClick={logout}>Sair da conta</button>}</div></footer>{master&&<MasterGate user={user} onClose={()=>setMaster(false)}/>}</>
+ return <><Header onMaster={()=>setMaster(true)} user={user}/><Routes><Route path="/" element={<Home user={user}/>}/><Route path="/conta" element={<Auth onUser={setUser}/>}/><Route path="/lojista" element={<Merchant user={user}/>}/><Route path="/mapa" element={<MapPage/>}/><Route path="/favoritos" element={<Favorites user={user}/>}/><Route path="/loja/:slug" element={<StoreDetail/>}/><Route path="*" element={<Navigate to="/" replace/>}/></Routes><footer className="footer"><div className="footer-brand">vitriny<span>.</span><p>Sua cidade inteira em uma vitrine.</p></div><div><strong>Explore</strong><Link to="/">Lojas e produtos</Link><Link to="/mapa">Mapa</Link><Link to="/favoritos">Favoritos</Link></div><div><strong>Para comerciantes</strong><Link to="/lojista">Área do lojista</Link><Link to="/conta">Criar conta</Link></div><div className="footer-bottom">© {new Date().getFullYear()} Vitriny. Feito para valorizar o comércio local. {user&&<button onClick={logout}>Sair da conta</button>}</div></footer>{master&&<MasterGate user={user} onClose={()=>setMaster(false)}/>}</>
 }
