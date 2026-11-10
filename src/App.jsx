@@ -34,7 +34,7 @@ const demoProducts = [
   {id:'p2',name:'Bolsa casual',description:'Versátil para acompanhar sua rotina.',price:159.9,promo_price:null,image_url:'',stores:{name:'Moda Urbana',whatsapp:''}},
   {id:'p3',name:'Fone Bluetooth',description:'Som sem fio para o dia a dia.',price:199.9,promo_price:169.9,image_url:'',stores:{name:'Tech Ponto',whatsapp:''}}
 ]
-function Header({ onMaster }) {
+function Header({ onMaster, user }) {
   const [clicks, setClicks] = useState([])
   const timer = useRef(null)
   function tapBag() {
